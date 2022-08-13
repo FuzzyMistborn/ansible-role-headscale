@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  role_name: headscale
+  author: fuzzymistborn
+  description: Installs and configures headscale
+  issue_tracker_url: https://github.com/FuzzyMistborn/ansible-role-headscale/issues
+  license: MIT
+  min_ansible_version: 2.4
+  platforms:
+    - name: GenericLinux
+      versions:
+        - all
+        - any
+  galaxy-tags:
+    - system
+    - web
+dependencies: []
