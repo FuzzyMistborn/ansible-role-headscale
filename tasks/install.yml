@@ -58,7 +58,7 @@
     - name: move to headscale path
       copy:
         src: "{{ headscale_download_directory }}/headscale_{{ headscale_ver }}_{{ headscale_distro }}"
-        dest: "{{ syncthing_install_directory }}"
+        dest: "{{ headscale_install_directory }}"
         remote_src: yes
         mode: +x
   when: headscale_is_installed == False or ( headscale_is_installed == True and headscale_download_latest_ver == True and installed_version_registered.stdout != headscale_ver ) or ( headscale_is_installed == True and headscale_download_latest_ver == False and installed_version_registered.stdout != headscale_pinned_ver )
