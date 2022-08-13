@@ -21,8 +21,13 @@
     state: directory
     owner: '{{ headscale_user_name }}'
     group: '{{ headscale_user_group }}'
-    mode: 0700
+    mode: 0770
   loop: '{{ headscale_directories }}'
+
+- name: get status of sqlite file
+  stat:
+    path: '{{ headscale_var_data_dir }}/db.sqlite'
+  register: is_installed
 
 - name: Ensure sqlite exists
   file:
@@ -30,4 +35,5 @@
     state: touch
     owner: '{{ headscale_user_uid }}'
     group: '{{ headscale_user_gid }}'
-    mode: 0600
+    mode: 0640
+  when: is_installed.stat.exists == False

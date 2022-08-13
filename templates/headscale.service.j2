@@ -8,7 +8,7 @@ Type=simple
 Environment=GIN_MODE=release
 User={{ headscale_user_name }}
 Group={{ headscale_user_group }}
-ExecStart={{ headscale_binary_path }} serve
+ExecStart={{ headscale_install_path }} serve
 Restart=always
 RestartSec=5
 

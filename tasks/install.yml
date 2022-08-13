@@ -56,12 +56,9 @@
         group: '{{ headscale_user_group }}'
         mode: +x
 
-    - name: move to headscale path
-      copy:
-        src: "{{ headscale_download_directory }}/headscale_{{ headscale_ver }}_{{ headscale_distro }}"
-        dest: "{{ headscale_install_directory }}"
-        remote_src: yes
-        mode: +x
+    - name: move to /usr/local/bin
+      shell: "mv {{ headscale_download_directory }}/headscale_{{ headscale_ver }}_{{ headscale_distro }} {{ headscale_install_path }}"
+
   when: headscale_is_installed == False or ( headscale_is_installed == True and headscale_download_latest_ver == True and installed_version_registered.stdout != headscale_ver ) or ( headscale_is_installed == True and headscale_download_latest_ver == False and installed_version_registered.stdout != headscale_pinned_ver )
 
 - name: Copy systemd unit file
@@ -70,5 +67,5 @@
     dest: '/etc/systemd/system/headscale.service'
     owner: '{{ headscale_user_uid }}'
     group: '{{ headscale_user_gid }}'
-    mode: 0600
+    mode: 0644
   notify: restart headscale
