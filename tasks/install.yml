@@ -34,8 +34,8 @@
     headscale_ver: "{{ headscale_pinned_ver }}"
   when: headscale_download_latest_ver == False
 
-- block:
-  name: download and install headscale
+- name: download and install headscale
+  block:
     - name: ensure headscale_download_directory does not exist
       file:
         path: "{{ headscale_download_directory }}"
