@@ -8,3 +8,4 @@ skip_list:
   - command-instead-of-shell
   - literal-compare
   - risky-shell-pipe
+  - fqcn-builtins

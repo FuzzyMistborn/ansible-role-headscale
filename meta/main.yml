@@ -16,7 +16,8 @@ galaxy_info:
     - name: Ubuntu
       versions:
         - all
-  galaxy-tags:
-    - system
-    - web
+  galaxy_tags:
+    - wireguard
+    - headscale
+    - tailscale
 dependencies: []
