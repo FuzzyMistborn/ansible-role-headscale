@@ -26,7 +26,7 @@
 
 - name: set headscale version (latest)
   set_fact:
-    headscale_ver: "{{ release_version_registered.json.tag_name|regex_replace('v') }}"
+    headscale_ver: "{{ release_version_registered.json.tag_name | regex_replace('v') }}"
   when: headscale_download_latest_ver == True
 
 - name: set headscale version (pinned)
@@ -35,6 +35,7 @@
   when: headscale_download_latest_ver == False
 
 - block:
+  name: download and install headscale
     - name: ensure headscale_download_directory does not exist
       file:
         path: "{{ headscale_download_directory }}"
