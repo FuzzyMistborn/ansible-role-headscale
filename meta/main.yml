@@ -7,10 +7,15 @@ galaxy_info:
   license: MIT
   min_ansible_version: 2.4
   platforms:
+    - name: Fedora
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
     - name: Ubuntu
       versions:
         - all
-        - any
   galaxy-tags:
     - system
     - web
