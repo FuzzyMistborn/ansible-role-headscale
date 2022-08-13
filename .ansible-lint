@@ -1,0 +1,10 @@
+---
+exclude_paths:
+  - galaxy_roles/
+  - galaxy_collections/
+
+skip_list:
+  - no-relative-paths
+  - command-instead-of-shell
+  - literal-compare
+  - risky-shell-pipe

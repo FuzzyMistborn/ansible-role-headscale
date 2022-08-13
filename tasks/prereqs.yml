@@ -1,0 +1,33 @@
+---
+- name: Create headscale user group
+  group:
+    name: '{{ headscale_user_group }}'
+    gid: '{{ headscale_user_gid }}'
+    system: true
+    state: present
+
+- name: Create headscale user
+  user:
+    name: '{{ headscale_user_name }}'
+    uid: '{{ headscale_user_uid }}'
+    group: '{{ headscale_user_group }}'
+    shell: /bin/false
+    system: true
+    create_home: false
+
+- name: Ensure headscale directories exist
+  file:
+    path: '{{ item }}'
+    state: directory
+    owner: '{{ headscale_user_name }}'
+    group: '{{ headscale_user_group }}'
+    mode: 0700
+  loop: '{{ headscale_directories }}'
+
+- name: Ensure sqlite exists
+  file:
+    path: '{{ headscale_var_data_dir }}/db.sqlite'
+    state: touch
+    owner: '{{ headscale_user_uid }}'
+    group: '{{ headscale_user_gid }}'
+    mode: 0600

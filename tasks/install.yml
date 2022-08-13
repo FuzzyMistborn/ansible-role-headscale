@@ -1,0 +1,73 @@
+---
+- name: get status of headscale_install_path
+  stat:
+    path: "{{ headscale_install_path }}"
+  register: is_installed
+
+- name: set headscale installed
+  set_fact:
+    headscale_is_installed: "{{ is_installed.stat.exists }}"
+
+- name: get installed headscale version
+  shell: "{{ is_installed.stat.path }} version"
+  register: installed_version_registered
+  changed_when: false
+  when: headscale_is_installed == True
+
+- name: get latest GH headscale version
+  uri:
+    url: https://api.github.com/repos/juanfont/headscale/releases/latest
+    url_username: "{{ github_api_user | default (omit) }}"
+    url_password: "{{ github_api_pass | default (omit) }}"
+    return_content: true
+    force_basic_auth: "{{ github_api_auth | default (omit) }}"
+  register: release_version_registered
+  when: headscale_download_latest_ver == True
+
+- name: set headscale version (latest)
+  set_fact:
+    headscale_ver: "{{ release_version_registered.json.tag_name|regex_replace('v') }}"
+  when: headscale_download_latest_ver == True
+
+- name: set headscale version (pinned)
+  set_fact:
+    headscale_ver: "{{ headscale_pinned_ver }}"
+  when: headscale_download_latest_ver == False
+
+- block:
+    - name: ensure headscale_download_directory does not exist
+      file:
+        path: "{{ headscale_download_directory }}"
+        state: absent
+
+    - name: create headscale_download_directory
+      file:
+        path: "{{ headscale_download_directory }}"
+        state: directory
+        mode: 0755
+
+    - name: download headscale
+      get_url:
+        url: "{{ headscale_gh_url }}/v{{ headscale_ver }}/headscale_{{ headscale_ver }}_{{ headscale_distro }}"
+        dest: "{{ headscale_download_directory }}"
+        force: yes
+        owner: '{{ headscale_user_name }}'
+        group: '{{ headscale_user_group }}'
+        mode: +x
+
+    - name: move to headscale path
+      copy:
+        src: "{{ headscale_download_directory }}/headscale_{{ headscale_ver }}_{{ headscale_distro }}"
+        dest: "{{ syncthing_install_directory }}"
+        remote_src: yes
+        mode: +x
+  when: headscale_is_installed == False or ( headscale_is_installed == True and headscale_download_latest_ver == True and installed_version_registered.stdout != headscale_ver ) or ( headscale_is_installed == True and headscale_download_latest_ver == False and installed_version_registered.stdout != headscale_pinned_ver )
+
+- name: Copy systemd unit file
+  template:
+    src: 'headscale.service.j2'
+    dest: '/etc/systemd/system/headscale.service'
+    owner: '{{ headscale_user_uid }}'
+    group: '{{ headscale_user_gid }}'
+    mode: 0600
+  notify: restart headscale
