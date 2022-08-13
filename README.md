@@ -28,34 +28,6 @@ The other variables, like `headscale_gh_url`, `headscale_install_directory`, etc
 
 See the release pages for [headscale](https://github.com/juanfront/headscale/releases) to find the correct distribution for your install.
 
-### Example for Autorestic Config File
-
-Autorestic configuration is copied to the root home directory by default. It can be changed to another user's home directory with the `autorestic_config_user` variable.
-
-Below is an example that shows all the available options.
-
-```yaml
-autorestic_config_yaml:
-  locations:
-    docker:
-      from: '/opt/docker'
-      to:
-        - local
-        - b2_docker
-  backends:
-    local:
-      type: local
-      path: /backup
-      key: 123
-    b2_docker:
-      type: s3
-      path: 'b2_backend_url'
-      key: b2_password
-      env:
-        AWS_ACCESS_KEY_ID: 1234
-        AWS_SECRET_ACCESS_KEY: 1234abc
-```
-
 ## Github API
 
 This role utilizes the GitHub API to determine the latest release available.  By default, the role utilizes unauthenticated requests, which are [limited by GitHub](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting) to 60 requests per hour.  Requests are associated with the originating IP address.  For most usecases, this is not an issue.  However, you may find yourself rate limited.  If you authenticate, you can make 5,000 requests per hour.
