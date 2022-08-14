@@ -68,4 +68,10 @@
     owner: '{{ headscale_user_uid }}'
     group: '{{ headscale_user_gid }}'
     mode: 0644
-  notify: restart headscale
+
+- name: Enable headscale service
+  service:
+    name: headscale.service
+    state: started
+    enabled: true
+    daemon-reload: true

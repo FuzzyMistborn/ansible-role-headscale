@@ -1,8 +1,7 @@
 ---
-- name: Restart headscale service
+- name: restart headscale
   service:
     name: headscale
     state: restarted
     enabled: true
     daemon-reload: true
-  listen: 'restart headscale'
