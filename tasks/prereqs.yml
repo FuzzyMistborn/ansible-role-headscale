@@ -24,7 +24,7 @@
     mode: 0770
   loop: '{{ headscale_directories }}'
 
-- name: get status of sqlite file
+- name: Get status of sqlite file
   stat:
     path: '{{ headscale_var_data_dir }}/db.sqlite'
   register: is_installed

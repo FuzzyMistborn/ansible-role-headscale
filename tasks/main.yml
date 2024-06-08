@@ -1,9 +1,9 @@
 ---
-- name: setup prereqs
+- name: Setup prereqs
   include_tasks: prereqs.yml
 
-- name: install headscale
+- name: Install headscale
   include_tasks: install.yml
 
-- name: configure headscale
+- name: Configure headscale
   include_tasks: configure.yml
