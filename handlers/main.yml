@@ -1,5 +1,5 @@
 ---
-- name: restart headscale
+- name: Restart headscale
   service:
     name: headscale
     state: restarted
