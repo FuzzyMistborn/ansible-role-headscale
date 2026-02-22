@@ -2,10 +2,10 @@ steps:
   - name: ansible-lint + yamllint
     image: fuzzymistborn/docker-linting:latest
     commands:
-      - ansible-lint .
-      - yamllint .
+      - ansible-lint --strict .
+      - yamllint -s .
 
-  - name: Send TG Notification
+  - name: Notify Success
     image: appleboy/drone-telegram
     settings:
       token:
@@ -13,12 +13,23 @@ steps:
       to:
         from_secret: tg_id
       format: markdown
-      message: "{{#success build.status}}✅  Build for `{{repo.name}}` was *successful*!{{else}}❌  Build for `{{repo.name}}` has *FAILED*!{{/success}} \n🌐  [Output]({{build.link}})\n📝  Commit: {{ commit.message }}"
+      message: "✅  Build for `${CI_REPO_NAME}` was *successful*!\n🌐  [Output](${CI_PIPELINE_URL})\n📝  Commit: ${CI_COMMIT_MESSAGE}"
     when:
-      event: push
-      status:
-        - success
-        - failure
+      - event: push
+        status: [success]
+
+  - name: Notify Failure
+    image: appleboy/drone-telegram
+    settings:
+      token:
+        from_secret: tg_token
+      to:
+        from_secret: tg_id
+      format: markdown
+      message: "❌  Build for `${CI_REPO_NAME}` has *FAILED*!\n🌐  [Output](${CI_PIPELINE_URL})\n📝  Commit: ${CI_COMMIT_MESSAGE}"
+    when:
+      - event: push
+        status: [failure]
 
 when:
   event: push

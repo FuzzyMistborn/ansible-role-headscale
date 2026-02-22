@@ -7,7 +7,7 @@ steps:
     commands:
       - ansible-galaxy role import --api-key $galaxy_api_key FuzzyMistborn ansible-role-headscale
 
-  - name: Send TG Notification
+  - name: Notify Success
     image: appleboy/drone-telegram
     settings:
       token:
@@ -15,12 +15,23 @@ steps:
       to:
         from_secret: tg_id
       format: markdown
-      message: "{{#success build.status}}✅  Push to Ansible Galaxy for `{{repo.name}}` was *successful*!{{else}}❌  Push to Ansible Galaxy for `{{repo.name}}` has *FAILED*!{{/success}} \n🌐  [Output]({{build.link}})"
+      message: "✅  Push to Ansible Galaxy for `${CI_REPO_NAME}` was *successful*!\n🌐  [Output](${CI_PIPELINE_URL})"
     when:
-      event: release
-      status:
-        - success
-        - failure
+      - event: release
+        status: [success]
+
+  - name: Notify Failure
+    image: appleboy/drone-telegram
+    settings:
+      token:
+        from_secret: tg_token
+      to:
+        from_secret: tg_id
+      format: markdown
+      message: "❌  Push to Ansible Galaxy for `${CI_REPO_NAME}` has *FAILED*!\n🌐  [Output](${CI_PIPELINE_URL})"
+    when:
+      - event: release
+        status: [failure]
 
 when:
   event: release
